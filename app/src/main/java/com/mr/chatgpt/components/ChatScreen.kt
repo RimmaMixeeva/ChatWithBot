@@ -7,10 +7,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.mr.chatgpt.Message
 
 @Composable
-fun ChatScreen() {
+fun chatScreen() {
     var chatMessages: ArrayList<Message> = arrayListOf(
         Message("hi", "me", "12:12"),
         Message("Hello! How can I assist you today?", "bot", "12:12"),
@@ -32,7 +33,14 @@ fun ChatScreen() {
     )
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Chat(chatMessages)
-        UserPanel()
+        chatMenu()
+        chat(chatMessages)
+//        userPanel()
     }
+}
+
+@Preview
+@Composable
+fun test3() {
+    chatScreen()
 }
