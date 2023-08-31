@@ -1,4 +1,4 @@
-package com.mr.chatgpt.components
+package com.mr.chatgpt.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

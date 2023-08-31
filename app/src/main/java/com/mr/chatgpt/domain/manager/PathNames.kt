@@ -1,4 +1,4 @@
-package com.mr.chatgpt.manager
+package com.mr.chatgpt.domain.manager
 
 import android.os.Environment
 

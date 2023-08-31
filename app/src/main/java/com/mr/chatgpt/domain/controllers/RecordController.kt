@@ -1,4 +1,4 @@
-package com.mr.chatgpt.controllers
+package com.mr.chatgpt.domain.controllers
 
 import kotlinx.coroutines.flow.Flow
 

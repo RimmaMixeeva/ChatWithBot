@@ -1,4 +1,4 @@
-package com.mr.chatgpt.components
+package com.mr.chatgpt.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,10 +34,4 @@ fun chatMenu() {
             Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.wrapContentWidth())
         }
     }
-}
-
-@Preview
-@Composable
-fun test2(){
-     chatMenu()
 }

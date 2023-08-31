@@ -1,8 +1,8 @@
-package com.mr.chatgpt.controllers
+package com.mr.chatgpt.domain.controllers
 
 import android.media.MediaRecorder
 import android.util.Log
-import com.mr.chatgpt.manager.PathNames
+import com.mr.chatgpt.domain.manager.PathNames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
