@@ -37,8 +37,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.mr.chatgpt.R
+import com.mr.chatgpt.domain.manager.Formatter
 import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
 import java.text.SimpleDateFormat
@@ -140,32 +142,18 @@ fun VideoThumbnail(video: VideoModel, chosenVideo: String) {
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.play_arrow),
-                    contentDescription = "video icon",
+                    contentDescription = "audio icon",
                     tint = Color.White,
                     modifier = Modifier.size(14.dp)
                 )
                 Text(
-                    text = returnFormattedTime(video.durationInMillis),
+                    text = Formatter.returnFormattedTime(video.durationInMillis),
                     modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                    color = Color.White
+                    color = Color.White,
+                    fontSize = 12.sp
                 )
             }
         }
     }
 }
 
-fun returnFormattedTime(milliseconds: Long): String {
-    var seconds = milliseconds / 1000 % 60
-    val minutes = milliseconds / (1000 * 60) % 60
-    val hours = milliseconds / (1000 * 60 * 60) % 24
-    return if (hours == 0L) {
-        if (minutes == 0L && seconds == 0L) {
-            seconds++
-            String.format("%02d:%02d", minutes, seconds)
-        } else {
-            String.format("%02d:%02d", minutes, seconds)
-        }
-    } else {
-        String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
-}

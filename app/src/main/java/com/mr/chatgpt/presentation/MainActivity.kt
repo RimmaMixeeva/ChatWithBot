@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import coil.compose.AsyncImage
@@ -29,6 +30,8 @@ import com.mr.chatgpt.domain.manager.FileManager
 import com.mr.chatgpt.domain.manager.Gallery
 import com.mr.chatgpt.domain.manager.PathNames
 import com.mr.chatgpt.domain.model.VideoModel
+import com.mr.chatgpt.presentation.components.audioGallery
+import com.mr.chatgpt.presentation.components.chatScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -53,10 +56,13 @@ class MainActivity : ComponentActivity() {
 
         var recorder = RecordControllerImpl()
         Gallery.fillVideoList(this, chatViewModel)
+        Gallery.fillAudioList(this, chatViewModel)
+
 
         setContent {
-            userPanel(recorder = recorder)
-//            selectionMenu(backgroundColor = Color.Gray, textColor = Color.White, wasChosenColor = Color.Blue, context = this, chatViewModel = chatViewModel)
+//            chatScreen()
+//            userPanel(recorder = recorder)
+           selectionMenu(backgroundColor = Color.Gray, textColor = Color.White, wasChosenColor = Color.Blue, context = this, chatViewModel = chatViewModel)
         }
 
     }

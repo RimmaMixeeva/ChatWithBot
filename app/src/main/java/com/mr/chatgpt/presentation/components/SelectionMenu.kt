@@ -81,6 +81,10 @@ fun selectionMenu(
         if (chosen == "VIDEO") {
             videoGallery(chatViewModel)
         }
+        if (chosen == "AUDIO") {
+            audioGallery(chatViewModel)
+        }
+
     }
 
 }
