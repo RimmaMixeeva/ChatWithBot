@@ -35,7 +35,6 @@ fun chatScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
         chatMenu()
         chat(chatMessages)
-//        userPanel()
     }
 }
 

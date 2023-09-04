@@ -43,6 +43,10 @@ import com.mr.chatgpt.R
 import com.mr.chatgpt.domain.manager.Formatter
 import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
+import com.mr.chatgpt.ui.theme.DarkFill
+import com.mr.chatgpt.ui.theme.LightBlack
+import com.mr.chatgpt.ui.theme.LightGrey
+import com.mr.chatgpt.ui.theme.LightYellow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -66,17 +70,16 @@ fun videoGallery(viewModel: ChatViewModel) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
             horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(DarkFill)
         ) {
             items(listSize) { index ->
-                //               val painter = rememberAsyncImagePainter(model = video[index])
                 val transparentWhite = Color(0x00FFFFFF)
 
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .padding(2.dp, 2.dp, 1.dp, 1.dp)
-                        .background(Color.LightGray)
+                        .background(LightBlack)
                 ) {
                     Canvas(
                         modifier = Modifier
@@ -91,7 +94,7 @@ fun videoGallery(viewModel: ChatViewModel) {
                                     )?.url ?: ""
                             })
                             .clip(CircleShape)
-                            .background(if (chosenVideo == videoList?.get(index)?.url) Color.Blue else transparentWhite),
+                            .background(if (chosenVideo == videoList?.get(index)?.url) LightYellow else transparentWhite),
 
                         ) {
                         drawCircle(

@@ -37,6 +37,10 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.mr.chatgpt.R
+import com.mr.chatgpt.ui.theme.DarkFill
+import com.mr.chatgpt.ui.theme.LightBlack
+import com.mr.chatgpt.ui.theme.LightGrey
+import com.mr.chatgpt.ui.theme.LightYellow
 
 @Composable
 fun imageGallery(images: ArrayList<String>) {
@@ -45,7 +49,7 @@ fun imageGallery(images: ArrayList<String>) {
         mutableStateOf("")
     }
 
-    Column() {
+    Column(modifier = Modifier.background(DarkFill)) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
             horizontalArrangement = Arrangement.SpaceAround
@@ -58,7 +62,7 @@ fun imageGallery(images: ArrayList<String>) {
                     .weight(1f)
                     .padding(2.dp, 2.dp, 1.dp, 1.dp)) {
                     Box(
-                        modifier = Modifier.background(Color.LightGray)
+                        modifier = Modifier.background(LightBlack)
                     ) {
                             Canvas(
                                 modifier = Modifier
@@ -68,7 +72,7 @@ fun imageGallery(images: ArrayList<String>) {
                                     .padding(0.dp, 8.dp, 8.dp, 0.dp)
                                     .clickable(onClick = {
                                         chosenImage = if (chosenImage == images[index]) "" else images[index]
-                                    }).clip(CircleShape).background(if (chosenImage == images[index]) Color.Blue else transparentWhite),
+                                    }).clip(CircleShape).background(if (chosenImage == images[index]) LightYellow else transparentWhite),
 
                                 ) {
                                 drawCircle(

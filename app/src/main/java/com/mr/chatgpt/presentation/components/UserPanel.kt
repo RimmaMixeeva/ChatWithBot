@@ -1,12 +1,16 @@
 package com.mr.chatgpt.presentation.components
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -25,13 +29,30 @@ import androidx.compose.ui.zIndex
 import com.mr.chatgpt.R
 import com.mr.chatgpt.domain.controllers.RecordController
 import com.mr.chatgpt.domain.controllers.RecordControllerImpl
+import com.mr.chatgpt.presentation.ChatViewModel
+import com.mr.chatgpt.ui.theme.DarkFill
+import com.mr.chatgpt.ui.theme.LightGrey
+import com.mr.chatgpt.ui.theme.LightYellow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun userPanel(recorder: RecordControllerImpl) {
+fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatViewModel) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    BackHandler(modalSheetState.isVisible) {
+        coroutineScope.launch { modalSheetState.hide() }
+    }
 
     var textInput by remember {
         mutableStateOf("")
@@ -40,66 +61,107 @@ fun userPanel(recorder: RecordControllerImpl) {
         mutableStateOf(false)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-
-        Box(modifier = Modifier.wrapContentSize()) {
-            TextField(
-                value = textInput,
-                onValueChange = { new ->
-                    if (!isOn) textInput = new },
+    ModalBottomSheetLayout(
+        sheetState = modalSheetState,
+        sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        sheetContent = {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White,
-                    textColor = Color.Black,
-                    cursorColor = Color.Blue,
-                    focusedIndicatorColor = Color.White,
-                    unfocusedIndicatorColor = Color.White,
-                    disabledIndicatorColor = Color.White
-                ),
-                leadingIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.List, contentDescription = "other")
-                    }
-                },
-                trailingIcon = {
-                    if (textInput == "" && !isOn) Row {
-                        if (!isOn) {
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.attach_icon), contentDescription = "attach file")
-                            }
-                            IconButton(onClick = {
-                                isOn = true
-                                recorder.start()
-                            }) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = R.drawable.mic),
-                                    contentDescription = "mic"
-                                )
-                            }
+                    .height(600.dp)
+            ) {
+                selectionMenu(
+                    backgroundColor = DarkFill,
+                    textColor = LightGrey,
+                    textChosenColor = DarkFill,
+                    wasChosenColor = LightYellow,
+                    context = context,
+                    chatViewModel = viewModel
+                )
+            }
+        }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+
+            Box(modifier = Modifier
+                .background(LightYellow)
+                .wrapContentSize()) {
+                TextField(
+                    value = textInput,
+                    onValueChange = { new ->
+                        if (!isOn) textInput = new
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = LightYellow),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = LightYellow,
+                        textColor = DarkFill,
+                        cursorColor = DarkFill,
+                        focusedIndicatorColor = LightYellow,
+                        unfocusedIndicatorColor = LightYellow,
+                        disabledIndicatorColor = LightYellow
+                    ),
+                    leadingIcon = {
+                        IconButton(onClick = { textInput = "" }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.delete),
+                                contentDescription = "delete"
+                            )
                         }
-                    } else IconButton(onClick = {
-                        if (isOn) {
-                            isOn = false
-                            recorder.stop()
-                        } else {
-                            textInput = ""
+                    },
+                    trailingIcon = {
+                        if (textInput == "" && !isOn) Row {
+                            if (!isOn) {
+                                IconButton(onClick = {
+                                    coroutineScope.launch {
+                                        if (modalSheetState.isVisible)
+                                            modalSheetState.hide()
+                                        else
+                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                    }
+                                }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.attach_icon),
+                                        contentDescription = "attach file"
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    isOn = true
+                                    recorder.start()
+                                }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.mic),
+                                        contentDescription = "mic"
+                                    )
+                                }
+                            }
+                        } else IconButton(onClick = {
+                            if (isOn) {
+                                isOn = false
+                                recorder.stop()
+                            } else {
+                                textInput = ""
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowForward,
+                                contentDescription = "send"
+                            )
                         }
-                    }) {
-                        Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "send")
-                    }
-                },
-                placeholder = {
-                    if (isOn) Text("Recording...", color = Color.Red)
-                    else Text("Message")
-                },
-                enabled = !isOn
-            )
+                    },
+                    placeholder = {
+                        if (isOn) Text("Recording...", color = DarkFill)
+                        else Text("Message")
+                    },
+                    enabled = !isOn
+                )
+            }
         }
     }
+
 }

@@ -28,6 +28,7 @@ import com.mr.chatgpt.presentation.ChatViewModel
 fun selectionMenu(
     backgroundColor: Color,
     textColor: Color,
+    textChosenColor: Color,
     wasChosenColor: Color,
     context: Context,
     chatViewModel: ChatViewModel
@@ -38,7 +39,7 @@ fun selectionMenu(
     Column() {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().background(backgroundColor),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
@@ -46,8 +47,8 @@ fun selectionMenu(
                 modifier = Modifier.weight(1f),
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (chosen == "PHOTO")wasChosenColor else backgroundColor,
-                    contentColor = textColor,
+                    backgroundColor = if (chosen == "PHOTO") wasChosenColor else backgroundColor,
+                    contentColor = if (chosen == "PHOTO") textChosenColor else textColor,
                 )
             ) {
                 Text(text = "PHOTO")
@@ -58,7 +59,7 @@ fun selectionMenu(
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (chosen == "VIDEO") wasChosenColor else backgroundColor,
-                    contentColor = textColor,
+                    contentColor = if (chosen == "VIDEO") textChosenColor else textColor,
                 )
             ) {
                 Text(text = "VIDEO")
@@ -69,7 +70,7 @@ fun selectionMenu(
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (chosen == "AUDIO")  wasChosenColor else backgroundColor,
-                    contentColor = textColor,
+                    contentColor = if (chosen == "AUDIO") textChosenColor else textColor,
                 )
             ) {
                 Text(text = "AUDIO")

@@ -20,11 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.mr.chatgpt.ui.theme.LightYellow
 
 @Composable
 fun chatMenu() {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().background(
-       Color.Cyan
+       LightYellow
     ), horizontalArrangement = Arrangement.SpaceBetween) {
         IconButton(onClick = { /*TODO*/ }) {
             Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "arrow back")

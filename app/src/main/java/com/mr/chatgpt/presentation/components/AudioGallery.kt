@@ -43,6 +43,10 @@ import com.mr.chatgpt.domain.manager.Formatter
 import com.mr.chatgpt.domain.model.AudioModel
 import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
+import com.mr.chatgpt.ui.theme.DarkFill
+import com.mr.chatgpt.ui.theme.LightBlack
+import com.mr.chatgpt.ui.theme.LightGrey
+import com.mr.chatgpt.ui.theme.LightYellow
 
 
 @Composable
@@ -61,13 +65,17 @@ fun audioGallery(viewModel: ChatViewModel) {
         listSize = it.size
     }
 
-    LazyColumn(reverseLayout = true, contentPadding = PaddingValues(6.dp)) {
+    LazyColumn(
+        reverseLayout = true, contentPadding = PaddingValues(6.dp), modifier = Modifier.background(
+            DarkFill
+        )
+    ) {
         items(listSize) { index ->
-            audioItem(audio = audioList?.get(index), chosenAudio){
+            audioItem(audio = audioList?.get(index), chosenAudio) {
                 chosenAudio = if (chosenAudio == audioList?.get(index)?.url) {
                     ""
                 } else {
-                    audioList?.get(index)?.url?:""
+                    audioList?.get(index)?.url ?: ""
                 }
 
             }
@@ -76,14 +84,14 @@ fun audioGallery(viewModel: ChatViewModel) {
 }
 
 @Composable
-fun audioItem(audio: AudioModel?, chosenAudio: String, onClickListener: ()-> Unit) {
+fun audioItem(audio: AudioModel?, chosenAudio: String, onClickListener: () -> Unit) {
 
     if (audio != null) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp)
-                .background(if (chosenAudio == audio.url) Color.LightGray else Color.White)
+                .background(if (chosenAudio == audio.url) LightYellow else LightBlack)
                 .clickable(onClick = onClickListener),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -92,22 +100,24 @@ fun audioItem(audio: AudioModel?, chosenAudio: String, onClickListener: ()-> Uni
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.music_note),
                     contentDescription = "video icon",
-                    tint = Color.White,
+                    tint = LightBlack,
                     modifier = Modifier
                         .size(36.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(Color.LightGray)
+                        .background(LightYellow)
                 )
                 Column(modifier = Modifier.padding(4.dp, 0.dp)) {
                     Text(
                         text = audio.name, fontSize = 15.sp, maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.widthIn(max = 200.dp)
+                        modifier = Modifier.widthIn(max = 200.dp),
+                        color = if (chosenAudio == audio.url) LightBlack else LightGrey
                     )
                     Text(
                         text = audio.artist, maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.widthIn(max = 200.dp)
+                        modifier = Modifier.widthIn(max = 200.dp),
+                        color = if (chosenAudio == audio.url) LightBlack else LightGrey
                     )
                 }
             }
@@ -115,19 +125,20 @@ fun audioItem(audio: AudioModel?, chosenAudio: String, onClickListener: ()-> Uni
             if (chosenAudio == audio.url) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.check),
-                    contentDescription = "video icon",
-                    tint = Color.Blue,
+                    contentDescription = "check",
+                    tint = LightBlack,
                     modifier = Modifier
                         .size(36.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(Color.LightGray)
+                        .background(LightYellow)
                         .padding(4.dp)
                 )
             } else {
                 Text(
                     text = Formatter.returnFormattedTime(audio.durationInMillis),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
+                    color = LightGrey
                 )
             }
 
