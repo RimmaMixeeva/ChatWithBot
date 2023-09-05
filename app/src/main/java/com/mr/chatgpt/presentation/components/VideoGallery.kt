@@ -57,6 +57,8 @@ fun videoGallery(viewModel: ChatViewModel) {
         mutableStateOf("")
     }
 
+    var chosenVideoIndex: Int = 0
+
     var videoList by remember { mutableStateOf<List<VideoModel>?>(null) }
 
     var listSize by remember { mutableStateOf(0) }
@@ -66,6 +68,7 @@ fun videoGallery(viewModel: ChatViewModel) {
         listSize = it.size
     }
 
+    Box(){
     Column() {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
@@ -88,10 +91,15 @@ fun videoGallery(viewModel: ChatViewModel) {
                             .align(Alignment.TopEnd)
                             .padding(0.dp, 8.dp, 8.dp, 0.dp)
                             .clickable(onClick = {
-                                chosenVideo =
-                                    if (chosenVideo == videoList?.get(index)?.url) "" else videoList?.get(
+                                if (chosenVideo == videoList?.get(index)?.url) {
+                                    chosenVideo = ""
+                                    chosenVideoIndex = 0
+                                } else {
+                                    chosenVideo = videoList?.get(
                                         index
                                     )?.url ?: ""
+                                    chosenVideoIndex = index
+                                }
                             })
                             .clip(CircleShape)
                             .background(if (chosenVideo == videoList?.get(index)?.url) LightYellow else transparentWhite),
@@ -109,6 +117,34 @@ fun videoGallery(viewModel: ChatViewModel) {
             }
         }
     }
+        if (chosenVideo != "") {
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clip(CircleShape)
+                    .size(50.dp)
+                    .background(LightYellow)
+                    .align(
+                        Alignment.BottomEnd
+                    )
+                    .clickable {
+                        chosenVideo = ""
+                        viewModel.chatMessage.audio = null
+                        viewModel.chatMessage.photo = null
+                        viewModel.chatMessage.video = videoList?.get(chosenVideoIndex)
+                        viewModel.galleryIsOpened.postValue(false)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.send),
+                    contentDescription = "send",
+                    modifier = Modifier.padding(5.dp, 0.dp, 0.dp, 0.dp),
+                    tint = DarkFill
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -121,7 +157,7 @@ fun VideoThumbnail(video: VideoModel, chosenVideo: String) {
     ) {
 
         Image(
-            bitmap = video.bitmap.asImageBitmap(),
+            bitmap = video.bitmap!!.asImageBitmap(),
             contentDescription = "video",
             contentScale = ContentScale.Crop,
             modifier = Modifier

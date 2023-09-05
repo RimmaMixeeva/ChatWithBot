@@ -56,6 +56,8 @@ fun audioGallery(viewModel: ChatViewModel) {
         mutableStateOf("")
     }
 
+    var chosenAudioIndex: Int = 0
+
     var audioList by remember { mutableStateOf<List<AudioModel>?>(null) }
 
     var listSize by remember { mutableStateOf(0) }
@@ -65,22 +67,55 @@ fun audioGallery(viewModel: ChatViewModel) {
         listSize = it.size
     }
 
-    LazyColumn(
-        reverseLayout = true, contentPadding = PaddingValues(6.dp), modifier = Modifier.background(
-            DarkFill
-        )
-    ) {
-        items(listSize) { index ->
-            audioItem(audio = audioList?.get(index), chosenAudio) {
-                chosenAudio = if (chosenAudio == audioList?.get(index)?.url) {
-                    ""
-                } else {
-                    audioList?.get(index)?.url ?: ""
-                }
+    Box() {
 
+        LazyColumn(
+            reverseLayout = true, contentPadding = PaddingValues(6.dp), modifier = Modifier.background(
+                DarkFill
+            )
+        ) {
+            items(listSize) { index ->
+                audioItem(audio = audioList?.get(index), chosenAudio) {
+                    chosenAudio = if (chosenAudio == audioList?.get(index)?.url) {
+                        chosenAudioIndex = 0
+                        ""
+                    } else {
+                        chosenAudioIndex = index
+                        audioList?.get(index)?.url ?: ""
+                    }
+                }
+            }
+        }
+
+        if (chosenAudio != "") {
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clip(CircleShape)
+                    .size(50.dp)
+                    .background(LightYellow)
+                    .align(
+                        Alignment.BottomEnd
+                    )
+                    .clickable {
+                        chosenAudio = ""
+                        viewModel.chatMessage.video = null
+                        viewModel.chatMessage.photo = null
+                        viewModel.chatMessage.audio = audioList?.get(chosenAudioIndex)
+                        viewModel.galleryIsOpened.postValue(false)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.send),
+                    contentDescription = "send",
+                    modifier = Modifier.padding(5.dp, 0.dp, 0.dp, 0.dp),
+                    tint = DarkFill
+                )
             }
         }
     }
+
 }
 
 @Composable

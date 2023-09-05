@@ -3,6 +3,7 @@ package com.mr.chatgpt.presentation.components
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
@@ -45,6 +46,7 @@ import kotlinx.coroutines.withContext
 fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatViewModel) {
 
     val coroutineScope = rememberCoroutineScope()
+
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
@@ -59,6 +61,16 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
     }
     var isOn by remember {
         mutableStateOf(false)
+    }
+
+
+    viewModel.galleryIsOpened.observe(context as ComponentActivity) {
+        if (viewModel.galleryIsOpened.value == false) {
+            coroutineScope.launch {
+                if (modalSheetState.isVisible)
+                    modalSheetState.hide()
+            }
+        }
     }
 
     ModalBottomSheetLayout(
@@ -87,17 +99,23 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
             contentAlignment = Alignment.BottomCenter
         ) {
 
-            Box(modifier = Modifier
-                .background(LightYellow)
-                .wrapContentSize()) {
+            Box(
+                modifier = Modifier
+                    .background(LightYellow)
+                    .wrapContentSize()
+            ) {
+                Column() {
+                    if(viewModel.chatMessage.video!= null) Text(text = "Было прикреплено видео")
+                    if(viewModel.chatMessage.audio!= null) Text(text = "Была прикреплено аудиозапись")
+                    if(viewModel.chatMessage.photo!= null) Text(text = "Была прикреплена фотография")
+                    
                 TextField(
                     value = textInput,
                     onValueChange = { new ->
                         if (!isOn) textInput = new
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = LightYellow),
+                        .fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = LightYellow,
                         textColor = DarkFill,
@@ -119,10 +137,8 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                             if (!isOn) {
                                 IconButton(onClick = {
                                     coroutineScope.launch {
-                                        if (modalSheetState.isVisible)
-                                            modalSheetState.hide()
-                                        else
-                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        viewModel.galleryIsOpened.postValue(true)
+                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
                                     }
                                 }) {
                                     Icon(
@@ -149,7 +165,7 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                             }
                         }) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowForward,
+                                imageVector = ImageVector.vectorResource(id = R.drawable.send),
                                 contentDescription = "send"
                             )
                         }
@@ -160,6 +176,7 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                     },
                     enabled = !isOn
                 )
+                }
             }
         }
     }
