@@ -1,5 +1,6 @@
 package com.mr.chatgpt.presentation.components
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -9,10 +10,10 @@ import com.mr.chatgpt.domain.model.Message
 import com.mr.chatgpt.presentation.ChatViewModel
 
 @Composable
-fun chatScreen(viewModel: ChatViewModel, context: Context) {
+fun chatScreen(viewModel: ChatViewModel, activity: Activity) {
 
     Column(modifier = Modifier.fillMaxSize()) {
-        chatMenu()
-        chat(viewModel, context)
+        chatMenu(activity)
+        chat(viewModel, activity)
     }
 }

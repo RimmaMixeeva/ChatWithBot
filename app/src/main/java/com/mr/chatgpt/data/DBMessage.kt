@@ -19,6 +19,7 @@ data class DBMessage(
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "sender") val sender: String,
     @ColumnInfo(name = "time") val time: Long,
+    @ColumnInfo(name = "data") val data: Long,
     @ColumnInfo(name = "image_url") val imageUrl: String,
     @ColumnInfo(name = "audio_name") val audioName: String,
     @ColumnInfo(name = "audio_url") val audioUrl: String,
@@ -29,14 +30,14 @@ data class DBMessage(
     @ColumnInfo(name = "video_duration") val videoDuration: Long
 ) {
     fun toMessage(): Message {
-        
-        Log.d("TEST", TimeHelper.convertMillisecondsToTime(time).toString())
+
         return Message(
             id = id,
             text = text,
             sender = sender,
             showTime = TimeHelper.convertMillisecondsToTime(time),
             time = time,
+            data = data,
             audio = AudioModel(audioName, audioUrl, audioDuration, audioArtist),
             video = VideoModel(
                 videoUrl,

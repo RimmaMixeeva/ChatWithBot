@@ -5,11 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.mr.chatgpt.utils.ChatConstants
 
 
 @Dao
 interface MessageDao {
-    @Query("SELECT * FROM MessageTable ORDER BY time DESC LIMIT 100;")
+    @Query("SELECT * FROM MessageTable ORDER BY data DESC, time DESC LIMIT ${ChatConstants.MAX_NUMBER_OF_MESSAGES_IN_CHAT}")
     fun getLast(): LiveData<List<DBMessage>>
 
     @Insert

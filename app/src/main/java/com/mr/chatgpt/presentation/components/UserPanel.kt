@@ -26,6 +26,7 @@ import com.mr.chatgpt.ui.theme.LightGrey
 import com.mr.chatgpt.ui.theme.LightYellow
 import com.mr.chatgpt.utils.TimeHelper
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -50,8 +51,17 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
         mutableStateOf(false)
     }
 
+    var attachWhat by remember {
+        mutableStateOf("")
+    }
+
 
     viewModel.galleryIsOpened.observe(context as ComponentActivity) {
+        if (viewModel.chatMessage.photo != null) attachWhat = "PHOTO"
+        else if (viewModel.chatMessage.video != null) attachWhat = "VIDEO"
+        else if (viewModel.chatMessage.audio != null) attachWhat = "AUDIO"
+        else attachWhat = ""
+
         if (viewModel.galleryIsOpened.value == false) {
             coroutineScope.launch {
                 if (modalSheetState.isVisible)
@@ -59,6 +69,7 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
             }
         }
     }
+
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -92,86 +103,92 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                     .wrapContentSize()
             ) {
                 Column() {
-                    if(viewModel.chatMessage.video!= null) Text(text = "Было прикреплено видео")
-                    if(viewModel.chatMessage.audio!= null) Text(text = "Была прикреплено аудиозапись")
-                    if(viewModel.chatMessage.photo!= null) Text(text = "Была прикреплена фотография")
-                    
-                TextField(
-                    value = textInput,
-                    onValueChange = { new ->
-                        if (!isOn) textInput = new
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = LightYellow,
-                        textColor = DarkFill,
-                        cursorColor = DarkFill,
-                        focusedIndicatorColor = LightYellow,
-                        unfocusedIndicatorColor = LightYellow,
-                        disabledIndicatorColor = LightYellow
-                    ),
-                    leadingIcon = {
-                        IconButton(onClick = {
-                            textInput = ""
-                            viewModel.chatMessage = Message()
-                        }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.delete),
-                                contentDescription = "delete"
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (textInput == "" && !isOn) Row {
-                            if (!isOn) {
-                                IconButton(onClick = {
-                                    coroutineScope.launch {
-                                        viewModel.galleryIsOpened.postValue(true)
-                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                    }
-                                }) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.attach_icon),
-                                        contentDescription = "attach file"
-                                    )
-                                }
-                                IconButton(onClick = {
-                                    isOn = true
-                                    recorder.start()
-                                }) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.mic),
-                                        contentDescription = "mic"
-                                    )
-                                }
-                            }
-                        } else IconButton(onClick = {
-                            if (isOn) {
-                                isOn = false
-                                recorder.stop()
-                            } else {
-                                viewModel.chatMessage.text = textInput
-                                viewModel.chatMessage.sender = viewModel.currentSender
-                                viewModel.currentSender = if (viewModel.currentSender == "me") "bot" else "me"
-                                viewModel.chatMessage.time = TimeHelper.getCurrentTimeLong()
-                                viewModel.chatMessage.showTime = TimeHelper.getCurrentTimeString()
-                                viewModel.insertExercise(viewModel.chatMessage)
+                    when (attachWhat) {
+                        "PHOTO" -> if (viewModel.chatMessage.photo != null) Text(text = "Была прикреплена фотография")
+                        "VIDEO" -> if (viewModel.chatMessage.video != null) Text(text = "Было прикреплено видео")
+                        "AUDIO" -> if (viewModel.chatMessage.audio != null) Text(text = "Была прикреплено аудиозапись")
+                    }
+                    TextField(
+                        value = textInput,
+                        onValueChange = { new ->
+                            if (!isOn) textInput = new
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = LightYellow,
+                            textColor = DarkFill,
+                            cursorColor = DarkFill,
+                            focusedIndicatorColor = LightYellow,
+                            unfocusedIndicatorColor = LightYellow,
+                            disabledIndicatorColor = LightYellow
+                        ),
+                        leadingIcon = {
+                            IconButton(onClick = {
                                 textInput = ""
+                                viewModel.chatMessage = Message()
+                                attachWhat = ""
+                            }) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.delete),
+                                    contentDescription = "delete"
+                                )
                             }
-                        }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.send),
-                                contentDescription = "send"
-                            )
-                        }
-                    },
-                    placeholder = {
-                        if (isOn) Text("Recording...", color = DarkFill)
-                        else Text("Message")
-                    },
-                    enabled = !isOn
-                )
+                        },
+                        trailingIcon = {
+                            if (textInput == "" && !isOn) Row {
+                                if (!isOn) {
+                                    IconButton(onClick = {
+                                        coroutineScope.launch {
+                                            viewModel.galleryIsOpened.postValue(true)
+                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.attach_icon),
+                                            contentDescription = "attach file"
+                                        )
+                                    }
+                                    IconButton(onClick = {
+                                        isOn = true
+                                        recorder.start()
+                                    }) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.mic),
+                                            contentDescription = "mic"
+                                        )
+                                    }
+                                }
+                            } else IconButton(onClick = {
+                                if (isOn) {
+                                    isOn = false
+                                    recorder.stop()
+                                } else {
+                                    viewModel.chatMessage.text = textInput
+                                    viewModel.chatMessage.sender = viewModel.currentSender
+                                    viewModel.currentSender =
+                                        if (viewModel.currentSender == "me") "bot" else "me"
+                                    viewModel.chatMessage.time = TimeHelper.getCurrentTimeLong()
+                                    viewModel.chatMessage.data = Date().time
+                                    viewModel.chatMessage.showTime =
+                                        TimeHelper.getCurrentTimeString()
+                                    viewModel.insertExercise(viewModel.chatMessage)
+                                    textInput = ""
+                                    attachWhat = ""
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.send),
+                                    contentDescription = "send"
+                                )
+                            }
+                        },
+                        placeholder = {
+                            if (isOn) Text("Recording...", color = DarkFill)
+                            else Text("Message")
+                        },
+                        enabled = !isOn
+                    )
                 }
             }
         }
