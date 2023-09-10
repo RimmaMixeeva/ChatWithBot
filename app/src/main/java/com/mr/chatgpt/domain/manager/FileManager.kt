@@ -3,6 +3,7 @@ package com.mr.chatgpt.domain.manager
 import android.util.Log
 import java.io.File
 import java.net.URI
+import java.nio.file.Paths
 
 class FileManager {
     companion object {
@@ -18,10 +19,7 @@ class FileManager {
         }
 
         fun getFileNameFromUrl(url: String): String {
-            val uri = URI(url)
-            val path = uri.path
-            val fileName = File(path).name
-            return fileName
+            return Paths.get(url).fileName.toString()
         }
 
     }

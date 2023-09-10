@@ -83,7 +83,7 @@ object Gallery {
                 val url = cursor.getString(columnIndexData)
                 val title = Paths.get(url).fileName.toString()
                 val duration = cursor.getLong(columnIndexDuration)
-                val artist = cursor.getString(columnIndexArtist)
+                val artist = if(cursor.getString(columnIndexArtist)==null) "<unknown>" else cursor.getString(columnIndexArtist)
 
                 val newList = viewModel.audioList.value
                 newList?.add(AudioModel(title, url, duration, artist))

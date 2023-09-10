@@ -52,7 +52,7 @@ class RecordControllerImpl : RecordController {
         retriever.setDataSource(url)
         val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         val duration = durationString?.toLongOrNull() ?: 0L
-        val artist = "<unknown"
+        val artist = "<unknown>"
         val name =  FileManager.getFileNameFromUrl(url)
         retriever.release()
         return AudioModel(name, url, duration, artist)
