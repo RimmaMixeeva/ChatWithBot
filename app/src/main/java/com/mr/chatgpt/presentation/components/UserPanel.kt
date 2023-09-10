@@ -2,43 +2,29 @@ package com.mr.chatgpt.presentation.components
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.mr.chatgpt.R
-import com.mr.chatgpt.domain.controllers.RecordController
 import com.mr.chatgpt.domain.controllers.RecordControllerImpl
+import com.mr.chatgpt.domain.model.Message
 import com.mr.chatgpt.presentation.ChatViewModel
 import com.mr.chatgpt.ui.theme.DarkFill
 import com.mr.chatgpt.ui.theme.LightGrey
 import com.mr.chatgpt.ui.theme.LightYellow
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.mr.chatgpt.utils.TimeHelper
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -125,7 +111,10 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                         disabledIndicatorColor = LightYellow
                     ),
                     leadingIcon = {
-                        IconButton(onClick = { textInput = "" }) {
+                        IconButton(onClick = {
+                            textInput = ""
+                            viewModel.chatMessage = Message()
+                        }) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.delete),
                                 contentDescription = "delete"
@@ -161,6 +150,12 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                                 isOn = false
                                 recorder.stop()
                             } else {
+                                viewModel.chatMessage.text = textInput
+                                viewModel.chatMessage.sender = viewModel.currentSender
+                                viewModel.currentSender = if (viewModel.currentSender == "me") "bot" else "me"
+                                viewModel.chatMessage.time = TimeHelper.getCurrentTimeLong()
+                                viewModel.chatMessage.showTime = TimeHelper.getCurrentTimeString()
+                                viewModel.insertExercise(viewModel.chatMessage)
                                 textInput = ""
                             }
                         }) {

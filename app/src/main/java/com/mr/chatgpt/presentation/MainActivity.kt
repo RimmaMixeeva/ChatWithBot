@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
@@ -64,7 +65,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        chatViewModel = ChatViewModel(this.application)
+        chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]
 
         FileManager.createFolder(PathNames.EXTERNAL_APPLICATION_APP)
         FileManager.createFolder(PathNames.EXTERNAL_APPLICATION_RECORDINGS)
@@ -82,9 +83,8 @@ class MainActivity : ComponentActivity() {
         Gallery.fillVideoList(this, chatViewModel)
         Gallery.fillAudioList(this, chatViewModel)
 
-
         setContent {
-            chatScreen()
+            chatScreen(chatViewModel, context)
             userPanel(recorder = recorder, context = context, viewModel = chatViewModel )
         }
 
