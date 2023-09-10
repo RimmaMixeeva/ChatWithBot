@@ -23,10 +23,9 @@ import com.mr.chatgpt.ui.theme.LightYellow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -36,12 +35,12 @@ fun chat(viewModel: ChatViewModel, context: Context) {
 
     viewModel.allMessages.observe(context as ComponentActivity) { data ->
         chosenMessanges.clear()
-        if ( data != null) {
-            for (each: Message in  data) {
+        if (data != null) {
+            for (each: Message in data) {
                 chosenMessanges.add(each)
             }
 
-    }
+        }
     }
 
     LazyColumn(
@@ -60,6 +59,7 @@ fun chat(viewModel: ChatViewModel, context: Context) {
 
 @Composable
 fun chatMessage(item: Message) {
+    val transparentBlack = Color(0x2D000000)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,22 +75,24 @@ fun chatMessage(item: Message) {
                 .wrapContentSize()
         ) {
 
-            Text(
-                text = item.text,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
-            )
+            if (item.text!=""){
+                Text(
+                    text = item.text,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                )
+            }
+
 
             if (item.audio != null) {
-                ShowAudio(audio = item.audio)
-
+                ShowAudio(audio = item.audio, transparentBlack)
             }
             if (item.photo != null) {
-                ShowImage(image = item.photo!!, size = 70.dp)
+                ShowImage(image = item.photo!!, size = 250.dp)
 
             }
             if (item.video != null) {
-                ShowVideo(video = item.video!!, size = 70.dp)
+                ShowVideo(video = item.video!!, size = 250.dp)
 
             }
             Text(

@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import com.mr.chatgpt.domain.model.AudioModel
 import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
@@ -14,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.nio.file.Path
 import java.nio.file.Paths
 
 

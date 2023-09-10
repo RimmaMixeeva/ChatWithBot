@@ -6,6 +6,8 @@ interface RecordController {
     fun getAudioPath(): String
     fun start()
     fun stop()
+
+    fun stopAndDelete()
     fun recorderIsOn(): Boolean
     fun getAmplitude(): Flow<Int>
     fun getAmplitudeDelay(): Int

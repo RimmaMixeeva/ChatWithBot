@@ -1,6 +1,5 @@
 package com.mr.chatgpt.presentation.components
 
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -46,10 +43,7 @@ import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
 import com.mr.chatgpt.ui.theme.DarkFill
 import com.mr.chatgpt.ui.theme.LightBlack
-import com.mr.chatgpt.ui.theme.LightGrey
 import com.mr.chatgpt.ui.theme.LightYellow
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun videoGallery(viewModel: ChatViewModel) {

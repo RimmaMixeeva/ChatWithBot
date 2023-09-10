@@ -4,14 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.chatgpt.data.AppDatabase
 import com.mr.chatgpt.data.ChatRepository
 import com.mr.chatgpt.domain.model.AudioModel
 import com.mr.chatgpt.domain.model.Message
 import com.mr.chatgpt.domain.model.VideoModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ChatViewModel(application: Application) : AndroidViewModel(application)  {

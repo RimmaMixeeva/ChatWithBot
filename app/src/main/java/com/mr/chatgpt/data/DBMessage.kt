@@ -1,7 +1,6 @@
 package com.mr.chatgpt.data
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

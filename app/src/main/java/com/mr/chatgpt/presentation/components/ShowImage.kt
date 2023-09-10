@@ -24,8 +24,7 @@ fun ShowImage(image: String, size: Dp) {
             contentDescription = null,
             modifier = Modifier
                 .size(size)
-                .clip(shape = RoundedCornerShape(4.dp))
-                .padding(0.dp),
+                .clip(shape = RoundedCornerShape(4.dp)),
             contentScale = ContentScale.Crop
         )
     }
