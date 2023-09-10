@@ -1,6 +1,7 @@
 package com.mr.chatgpt.data
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -28,6 +29,8 @@ data class DBMessage(
     @ColumnInfo(name = "video_duration") val videoDuration: Long
 ) {
     fun toMessage(): Message {
+        
+        Log.d("TEST", TimeHelper.convertMillisecondsToTime(time).toString())
         return Message(
             id = id,
             text = text,

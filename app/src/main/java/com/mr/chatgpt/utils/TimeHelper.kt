@@ -1,5 +1,6 @@
 package com.mr.chatgpt.utils
 
+import android.util.Log
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -13,21 +14,11 @@ class TimeHelper {
 
         fun getCurrentTimeLong(): Long {
             val localTime = LocalTime.now()
-            val nanos = localTime.toNanoOfDay()
-            val seconds = localTime.toSecondOfDay()
-
-            return seconds * 1000 + nanos / 1_000_000
+            var seconds = localTime.toSecondOfDay()
+            var milliseconds: Long = seconds * 1000L
+            return milliseconds
         }
 
-
-        fun convertTimeToMilliseconds(timeString: String): Long {
-            val parts = timeString.split(":")
-            val hours = parts[0].toInt()
-            val minutes = parts[1].toInt()
-
-            val totalMilliseconds: Long = (hours * 60 * 60 * 1000L) + (minutes * 60 * 1000)
-            return totalMilliseconds
-        }
 
         fun convertMillisecondsToTime(milliseconds: Long): String {
             val totalSeconds = milliseconds / 1000

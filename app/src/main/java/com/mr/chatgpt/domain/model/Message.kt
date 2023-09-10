@@ -1,6 +1,7 @@
 package com.mr.chatgpt.domain.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.mr.chatgpt.data.DBMessage
 import java.io.ByteArrayOutputStream
 
