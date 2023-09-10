@@ -1,5 +1,6 @@
 package com.mr.chatgpt.presentation.components
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -57,7 +58,9 @@ fun videoGallery(viewModel: ChatViewModel) {
         mutableStateOf("")
     }
 
-    var chosenVideoIndex: Int = 0
+    var chosenVideoIndex by remember {
+        mutableStateOf(-1)
+    }
 
     var videoList by remember { mutableStateOf<List<VideoModel>?>(null) }
 
@@ -93,7 +96,7 @@ fun videoGallery(viewModel: ChatViewModel) {
                             .clickable(onClick = {
                                 if (chosenVideo == videoList?.get(index)?.url) {
                                     chosenVideo = ""
-                                    chosenVideoIndex = 0
+                                    chosenVideoIndex = -1
                                 } else {
                                     chosenVideo = videoList?.get(
                                         index

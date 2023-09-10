@@ -120,11 +120,11 @@ fun imageGallery(images: ArrayList<String>, viewModel: ChatViewModel) {
                         Alignment.BottomEnd
                     )
                     .clickable {
-                        chosenImage = ""
                         viewModel.chatMessage.audio = null
                         viewModel.chatMessage.video = null
                         viewModel.chatMessage.photo = chosenImage
                         viewModel.galleryIsOpened.postValue(false)
+                        chosenImage = ""
                     },
                 contentAlignment = Alignment.Center
             ) {

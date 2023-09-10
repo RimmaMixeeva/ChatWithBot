@@ -75,7 +75,7 @@ fun audioGallery(viewModel: ChatViewModel) {
             )
         ) {
             items(listSize) { index ->
-                audioItem(audio = audioList?.get(index), chosenAudio) {
+                AudioItem(audio = audioList?.get(index), chosenAudio) {
                     chosenAudio = if (chosenAudio == audioList?.get(index)?.url) {
                         chosenAudioIndex = 0
                         ""
@@ -119,7 +119,7 @@ fun audioGallery(viewModel: ChatViewModel) {
 }
 
 @Composable
-fun audioItem(audio: AudioModel?, chosenAudio: String, onClickListener: () -> Unit) {
+fun AudioItem(audio: AudioModel?, chosenAudio: String, onClickListener: () -> Unit) {
 
     if (audio != null) {
         Row(

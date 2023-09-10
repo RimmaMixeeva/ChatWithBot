@@ -80,6 +80,19 @@ fun chatMessage(item: Message) {
                 fontSize = 20.sp,
                 modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
             )
+
+            if (item.audio != null) {
+                ShowAudio(audio = item.audio)
+
+            }
+            if (item.photo != null) {
+                ShowImage(image = item.photo!!, size = 70.dp)
+
+            }
+            if (item.video != null) {
+                ShowVideo(video = item.video!!, size = 70.dp)
+
+            }
             Text(
                 text = item.showTime,
                 fontSize = 10.sp,

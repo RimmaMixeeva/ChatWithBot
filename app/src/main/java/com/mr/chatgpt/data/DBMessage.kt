@@ -38,13 +38,13 @@ data class DBMessage(
             showTime = TimeHelper.convertMillisecondsToTime(time),
             time = time,
             data = data,
-            audio = AudioModel(audioName, audioUrl, audioDuration, audioArtist),
-            video = VideoModel(
+            audio = if (audioUrl == "") null else AudioModel(audioName, audioUrl, audioDuration, audioArtist),
+            video = if (videoUrl == "") null else VideoModel(
                 videoUrl,
                 BitmapFactory.decodeByteArray(videoBitmap, 0, videoBitmap.size),
                 videoDuration
             ),
-            photo = imageUrl
+            photo = if (imageUrl=="") null else imageUrl
         )
     }
 

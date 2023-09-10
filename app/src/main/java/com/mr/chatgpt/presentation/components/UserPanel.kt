@@ -5,23 +5,44 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import coil.compose.rememberAsyncImagePainter
 import com.mr.chatgpt.R
 import com.mr.chatgpt.domain.controllers.RecordControllerImpl
+import com.mr.chatgpt.domain.manager.Formatter
+import com.mr.chatgpt.domain.model.AudioModel
 import com.mr.chatgpt.domain.model.Message
+import com.mr.chatgpt.domain.model.VideoModel
 import com.mr.chatgpt.presentation.ChatViewModel
 import com.mr.chatgpt.ui.theme.DarkFill
+import com.mr.chatgpt.ui.theme.LightBlack
 import com.mr.chatgpt.ui.theme.LightGrey
 import com.mr.chatgpt.ui.theme.LightYellow
 import com.mr.chatgpt.utils.TimeHelper
@@ -61,7 +82,6 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
         else if (viewModel.chatMessage.video != null) attachWhat = "VIDEO"
         else if (viewModel.chatMessage.audio != null) attachWhat = "AUDIO"
         else attachWhat = ""
-
         if (viewModel.galleryIsOpened.value == false) {
             coroutineScope.launch {
                 if (modalSheetState.isVisible)
@@ -103,10 +123,22 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                     .wrapContentSize()
             ) {
                 Column() {
+                    Box(
+                        modifier = Modifier
+                            .shadow(1.dp)
+                            .fillMaxWidth()
+                    ) {
                     when (attachWhat) {
-                        "PHOTO" -> if (viewModel.chatMessage.photo != null) Text(text = "Была прикреплена фотография")
-                        "VIDEO" -> if (viewModel.chatMessage.video != null) Text(text = "Было прикреплено видео")
-                        "AUDIO" -> if (viewModel.chatMessage.audio != null) Text(text = "Была прикреплено аудиозапись")
+                        "PHOTO" -> {
+                            ShowImage(image = viewModel.chatMessage.photo!!, 70.dp)
+                        }
+                        "VIDEO" ->  {
+                            ShowVideo(video = viewModel.chatMessage.video!!, 80.dp)
+                        }
+                        "AUDIO" ->  {
+                            ShowAudio(audio = viewModel.chatMessage.audio)
+                        }
+                    }
                     }
                     TextField(
                         value = textInput,
@@ -136,7 +168,8 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                             }
                         },
                         trailingIcon = {
-                            if (textInput == "" && !isOn) Row {
+                            if (textInput == "" && !isOn && attachWhat == "") Row {
+
                                 if (!isOn) {
                                     IconButton(onClick = {
                                         coroutineScope.launch {
@@ -193,5 +226,7 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
             }
         }
     }
-
 }
+
+
+
