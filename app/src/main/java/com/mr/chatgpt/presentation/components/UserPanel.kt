@@ -1,6 +1,7 @@
 package com.mr.chatgpt.presentation.components
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -18,17 +19,25 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+
+import androidx.lifecycle.lifecycleScope
 import com.mr.chatgpt.R
 import com.mr.chatgpt.domain.controllers.RecordControllerImpl
 import com.mr.chatgpt.domain.manager.Gallery
 import com.mr.chatgpt.domain.model.AudioModel
 import com.mr.chatgpt.domain.model.Message
+import com.mr.chatgpt.domain.model.getEventsFlow
 import com.mr.chatgpt.presentation.ChatViewModel
 import com.mr.chatgpt.ui.theme.DarkFill
 import com.mr.chatgpt.ui.theme.LightGrey
 import com.mr.chatgpt.ui.theme.LightYellow
 import com.mr.chatgpt.utils.TimeHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -46,6 +55,27 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
     BackHandler(modalSheetState.isVisible) {
         coroutineScope.launch { modalSheetState.hide() }
     }
+
+    getEventsFlow().asLiveData(Dispatchers.IO).observe(context as LifecycleOwner, Observer {
+            event ->
+        // Get the Activity's lifecycleScope and launch
+        context.lifecycleScope.launch(Dispatchers.Main) {
+            // run the code again in IO context
+            withContext(Dispatchers.IO) {
+                if (event.name == "put") {
+                    var message = Message()
+                    message.sender = "bot"
+                    message.text = event.data.substring(935, 1022)
+                    message.time = TimeHelper.getCurrentTimeLong()
+                    message.data = Date().time
+                    message.showTime = TimeHelper.getCurrentTimeString()
+                    viewModel.insertExercise(message)
+                }
+            }
+        }
+    }
+    )
+
 
     var textInput by remember {
         mutableStateOf("")
@@ -188,7 +218,7 @@ fun userPanel(recorder: RecordControllerImpl, context: Context, viewModel: ChatV
                                     viewModel.chatMessage.text = textInput
                                     viewModel.chatMessage.sender = viewModel.currentSender
                                     viewModel.currentSender =
-                                        if (viewModel.currentSender == "me") "bot" else "me"
+                                        if (viewModel.currentSender == "me") "me" else "me"
                                     viewModel.chatMessage.time = TimeHelper.getCurrentTimeLong()
                                     viewModel.chatMessage.data = Date().time
                                     viewModel.chatMessage.showTime =
